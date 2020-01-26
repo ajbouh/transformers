@@ -244,7 +244,7 @@ class AlbertAttention(BertSelfAttention):
         print("context_layer", context_layer.layout, context_layer.device)
         print("w", w.layout, w.device)
 
-        if w.is_mkldnn:
+        if w.is_mkldnn():
             w = w.to_dense()
             print("w", w.layout, w.device)
         b = self.dense.bias.to(context_layer.dtype)
