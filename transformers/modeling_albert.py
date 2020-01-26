@@ -241,13 +241,13 @@ class AlbertAttention(BertSelfAttention):
 
         # Should find a better way to do this
         w = self.dense.weight.t().reshape(self.num_attention_heads, self.attention_head_size, self.hidden_size).to(context_layer.dtype)
+        b = self.dense.bias.to(context_layer.dtype)
+
         print("context_layer", context_layer.layout, context_layer.device)
         print("w", w.layout, w.device)
-
-        if w.is_mkldnn():
+        if w.is_mkldnn:
             w = w.to_dense()
             print("w", w.layout, w.device)
-        b = self.dense.bias.to(context_layer.dtype)
 
         projected_context_layer = torch.einsum("bfnd,ndh->bfh", context_layer, w) + b
         projected_context_layer_dropout = self.dropout(projected_context_layer)
