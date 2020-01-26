@@ -168,7 +168,7 @@ class AlbertEmbeddings(BertEmbeddings):
         self.token_type_embeddings = nn.Embedding(config.type_vocab_size, config.embedding_size)
         self.LayerNorm = torch.nn.LayerNorm(config.embedding_size, eps=config.layer_norm_eps)
 
-import torch,utils.dlpack as dlpack
+import torch.utils.dlpack as dlpack
 
 class AlbertAttention(BertSelfAttention):
     def __init__(self, config):
