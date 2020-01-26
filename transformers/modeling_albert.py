@@ -240,7 +240,8 @@ class AlbertAttention(BertSelfAttention):
         
 
         # Should find a better way to do this
-        w = self.dense.weight.t().reshape(self.num_attention_heads, self.attention_head_size, self.hidden_size).to(context_layer.dtype).contiguous()
+        w = self.dense.weight.t().reshape(self.num_attention_heads, self.attention_head_size, self.hidden_size).to(context_layer.dtype)
+        w = torch.as_tensor(w)
         b = self.dense.bias.to(context_layer.dtype)
 
         projected_context_layer = torch.einsum("bfnd,ndh->bfh", context_layer, w) + b
