@@ -248,7 +248,7 @@ class AlbertAttention(BertSelfAttention):
         print("w", w.layout, w.device)
 
         if w.is_mkldnn:
-            w = dlpack.from_dlpack(dlpack.to_dlpack(w))
+            w = dlpack.from_dlpack(dlpack.to_dlpack(w.to_dense()))
             print("w", w.layout, w.device)
 
         projected_context_layer = torch.einsum("bfnd,ndh->bfh", context_layer, w) + b
