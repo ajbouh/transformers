@@ -240,10 +240,12 @@ class AlbertAttention(BertSelfAttention):
         
 
         # Should find a better way to do this
-        w = self.dense.weight.t().reshape(self.num_attention_heads, self.attention_head_size, self.hidden_size).to(context_layer.dtype, non_blocking=False)
-        w = w.cpu()
+        w = self.dense.weight.t().reshape(self.num_attention_heads, self.attention_head_size, self.hidden_size).to(context_layer.dtype)
+        # w = w.cpu()
         b = self.dense.bias.to(context_layer.dtype)
 
+        print("context_layer", context_layer)
+        print("w", w)
         projected_context_layer = torch.einsum("bfnd,ndh->bfh", context_layer, w) + b
         projected_context_layer_dropout = self.dropout(projected_context_layer)
         layernormed_context_layer = self.LayerNorm(input_ids + projected_context_layer_dropout)
