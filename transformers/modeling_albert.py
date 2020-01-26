@@ -168,6 +168,7 @@ class AlbertEmbeddings(BertEmbeddings):
         self.token_type_embeddings = nn.Embedding(config.type_vocab_size, config.embedding_size)
         self.LayerNorm = torch.nn.LayerNorm(config.embedding_size, eps=config.layer_norm_eps)
 
+import torch,utils.dlpack as dlpack
 
 class AlbertAttention(BertSelfAttention):
     def __init__(self, config):
@@ -245,8 +246,9 @@ class AlbertAttention(BertSelfAttention):
 
         print("context_layer", context_layer.layout, context_layer.device)
         print("w", w.layout, w.device)
+
         if w.is_mkldnn:
-            w = w.to_dense()
+            w = dlpack.from_dlpack(dlpack.to_dlpack(w))
             print("w", w.layout, w.device)
 
         projected_context_layer = torch.einsum("bfnd,ndh->bfh", context_layer, w) + b
